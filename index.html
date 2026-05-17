@@ -3,350 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hyderabadi Chai Adda - Premium Local Ordering & Lounges</title>
-    <!-- Tailwind CSS for modern UI design -->
+    <title>Hyderabadi Chai Adda - Consolidated Master App</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome for e-commerce, food delivery, & location icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Noto Sans Telugu & Inter for beautiful cross-language layout alignment -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', 'Noto Sans Telugu', sans-serif; }
-        .page-view { display: none; }
-        .page-view.active { display: block; }
+        .app-view { display: none; }
+        .app-view.active { display: block; }
+        .blog-panel { display: none; }
+        .blog-panel.active { display: block; }
+        .f-panel { display: none; }
+        .f-panel.active { display: block; }
     </style>
 </head>
-<body class="bg-amber-50/30 text-slate-800 antialiased">
+<body class="bg-[#F7F9F6] text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- TOP GLOBAL NAVBAR (Fixed/Sticky like Swiggy & Zepto) -->
-    <nav class="bg-white shadow-sm border-b border-amber-100 sticky top-0 z-50 px-4 sm:px-8 py-4 flex justify-between items-center">
+    <nav class="bg-[#203226] text-white sticky top-0 z-50 px-4 sm:px-8 py-4 flex justify-between items-center shadow-md border-b border-stone-800">
         <div class="flex items-center gap-6">
-            <!-- Brand Logo -->
-            <div onclick="navigateTo('home')" class="text-xl font-black tracking-tight text-amber-900 cursor-pointer flex items-center gap-2">
-                <i class="fa-solid fa-mug-hot text-amber-600 text-2xl"></i>
-                HCA <span class="text-amber-600 font-medium text-base hidden sm:inline">CHAI ADDA</span>
+            <div class="leading-tight cursor-pointer" onclick="navigateToView('about')">
+                <span class="block font-black tracking-wider text-lg uppercase text-white">HYDERABADI</span>
+                <span class="block text-xs text-[#F26E21] font-bold tracking-widest uppercase">CHAI ADDA</span>
             </div>
-            <!-- Geolocation Mock Indicator (Swiggy Style) -->
-            <div class="hidden md:flex items-center gap-2 text-xs bg-slate-100 px-3 py-1.5 rounded-full text-slate-600">
-                <i class="fa-solid fa-location-crosshairs text-amber-600"></i>
-                <span class="font-bold text-slate-800" data-key="geoCity">Raidurg, Hyderabad</span>
+            <div class="hidden md:flex items-center gap-2 text-xs bg-stone-900/40 border border-stone-700/50 px-3 py-1.5 rounded-full text-stone-300">
+                <i class="fa-solid fa-location-dot text-[#F26E21]"></i>
+                <span class="font-bold text-white">Raidurg, Hyderabad</span>
             </div>
         </div>
 
-        <!-- Dynamic Platform Router Links -->
-        <div class="flex gap-4 sm:gap-6 font-semibold text-sm text-slate-600">
-            <button onclick="navigateTo('home')" class="hover:text-amber-700 transition cursor-pointer" data-key="navHome">Home</button>
-            <button onclick="navigateTo('order')" class="hover:text-amber-700 transition cursor-pointer flex items-center gap-1" data-key="navOrder"><i class="fa-solid fa-motorcycle text-amber-500"></i> Order Online</button>
-            <button onclick="navigateTo('lounge')" class="hover:text-amber-700 transition cursor-pointer" data-key="navLounge">Book Lounge</button>
-            <button onclick="navigateTo('franchise')" class="hover:text-amber-700 transition cursor-pointer text-amber-700 font-bold hidden sm:block" data-key="navFranchise">Franchise</button>
+        <div class="hidden lg:flex items-center gap-6 font-semibold text-sm">
+            <button id="nav-about" onclick="navigateToView('about')" class="text-[#F26E21] border-b-2 border-[#F26E21] pb-1 cursor-pointer transition">About</button>
+            <button id="nav-menu" onclick="navigateToView('menu')" class="text-stone-300 hover:text-white cursor-pointer transition">Menu</button>
+            <button id="nav-lounges" onclick="navigateToView('lounges')" class="text-stone-300 hover:text-white cursor-pointer transition">Lounges</button>
+            <button id="nav-franchise" onclick="navigateToView('franchise')" class="text-stone-300 hover:text-white cursor-pointer transition">Franchise</button>
+            <button id="nav-careers" onclick="navigateToView('careers')" class="text-stone-300 hover:text-white cursor-pointer transition">Careers</button>
+            <button id="nav-blogs" onclick="navigateToView('blogs')" class="text-stone-300 hover:text-white cursor-pointer transition">Blogs</button>
         </div>
 
-        <div class="flex items-center gap-3">
-            <!-- LANGUAGE SWITCH COMPONENT (Highly Visible) -->
-            <button onclick="toggleLanguage()" class="bg-amber-800 hover:bg-amber-900 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition shadow-sm cursor-pointer">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleGlobalLanguage()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition shadow-xs cursor-pointer">
                 <i class="fa-solid fa-language text-sm"></i>
                 <span id="langIndicator">తెలుగు</span>
             </button>
-            <!-- Global Shopping Cart Micro-Badge -->
-            <div class="relative bg-amber-100 text-amber-900 p-2 rounded-lg cursor-pointer hover:bg-amber-200 transition">
-                <i class="fa-solid fa-basket-shopping text-sm"></i>
-                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+            <div onclick="toggleCartPanel()" class="relative bg-amber-500/10 text-amber-400 p-2.5 rounded-xl cursor-pointer hover:bg-amber-500/20 transition flex items-center gap-2 border border-amber-500/20">
+                <i class="fa-solid fa-basket-shopping text-sm text-[#F26E21]"></i>
+                <span id="cartCountBadge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
             </div>
         </div>
     </nav>
 
-    <!-- ========================================== -->
-    <!-- VIEW 1: HOME PAGE OVERVIEW                 -->
-    <!-- ========================================== -->
-    <div id="view-home" class="page-view active">
-        <!-- Hero Banner emphasizing 2016 history (Ratan Tata / KTR) -->
-        <header class="bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 text-white py-20 px-4 sm:px-8 text-center md:text-left">
-            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div id="view-about" class="app-view active">
+        <header class="bg-gradient-to-br from-[#203226] via-[#16241B] to-[#0D1610] text-white py-16 px-4 sm:px-8 border-b-8 border-[#F26E21] text-center md:text-left">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <span class="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider" data-key="heroBadge">Est. 2016 | Premium Chain</span>
-                    <h1 class="text-4xl md:text-5xl font-extrabold mt-4 mb-6 leading-tight" data-key="heroTitle">The Modern Hub for Authentic Irani Chai Culture</h1>
-                    <p class="text-amber-100/80 text-base md:text-lg mb-8 leading-relaxed" data-key="heroDesc">From serving our milestone first legendary cup to the Late Shri Ratan Tata at T-Hub with KTR, we bridge time-honored taste with impeccable hygiene.</p>
+                    <span class="bg-amber-500/10 text-amber-400 text-xs uppercase font-extrabold tracking-widest px-3 py-1 rounded-full border border-amber-500/20" data-key="lblRefreshing">Refreshingly Delightful</span>
+                    <h1 class="text-4xl md:text-5xl font-black mt-4 mb-4 leading-tight" data-key="heroTitle">Hyderabadi Chai Adda</h1>
+                    <p class="text-stone-300 text-sm md:text-base leading-relaxed mb-6" data-key="heroDesc">Taste the authentic flavours of Hyderabad with our premium chai, where tradition meets modern comfort. Since 2016, we've been serving refreshingly delightful moments, one cup at a time.</p>
                     <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                        <button onclick="navigateTo('order')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-md cursor-pointer flex items-center gap-2"><i class="fa-solid fa-bolt"></i> <span data-key="heroBtnOrder">Order Instant Delivery</span></button>
-                        <button onclick="navigateTo('lounge')" class="border border-amber-500 hover:border-white text-white font-bold px-6 py-3 rounded-xl transition cursor-pointer" data-key="heroBtnLounge">Explore Lounges</button>
+                        <button onclick="navigateToView('menu')" class="bg-[#F26E21] hover:bg-[#d95d16] text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2"><i class="fa-solid fa-mug-hot"></i> <span data-key="btnExploreMenu">Explore Our Menu</span></button>
+                        <button onclick="navigateToView('franchise')" class="bg-white/10 hover:bg-white/20 border border-stone-500 font-bold text-sm px-6 py-3 rounded-xl transition"><span data-key="btnOwnFranchise">Own a Franchise</span></button>
                     </div>
                 </div>
                 <div class="flex justify-center">
-                    <div class="relative bg-amber-800/20 p-8 rounded-3xl border border-amber-700/30 text-center max-w-sm">
-                        <i class="fa-solid fa-crown text-amber-400 text-4xl mb-4 animate-bounce"></i>
-                        <h3 class="text-xl font-bold mb-2 text-amber-300" data-key="statHead">Premium Social Hubs</h3>
-                        <p class="text-xs text-amber-200/70" data-key="statDesc">Modern clean environments featuring board games, libraries, and strict hygiene paradigms for families and professionals alike.</p>
+                    <div class="relative bg-[#25392C] p-6 rounded-2xl border border-amber-500/10 max-w-sm shadow-2xl text-center">
+                        <div class="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/20"><i class="fa-solid fa-award text-[#F26E21] text-2xl"></i></div>
+                        <h3 class="text-lg font-bold text-amber-400 mb-1" data-key="lblCelebrityTea">Celebrity Tea Company</h3>
+                        <p class="text-xs text-stone-300 leading-relaxed" data-key="lblCelebrityTeaDesc">HCA is known as the celebrity tea company that gives an enriched experience of the tea business with value for money.</p>
                     </div>
                 </div>
             </div>
         </header>
-    </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: SWIGGY/ZEPTO STYLE ORDERING SYSTEM -->
-    <!-- ========================================== -->
-    <div id="view-order" class="page-view py-12 px-4 sm:px-8 max-w-6xl mx-auto">
-        <!-- Search bar layout mimicking food platforms -->
-        <div class="max-w-2xl mx-auto mb-10">
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                <input type="text" placeholder="Search for Chai, Bun Maska, Snacks..." class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl shadow-xs focus:outline-none focus:border-amber-600 text-sm" data-key="searchPlaceholder">
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-4 gap-8">
-            <!-- Category Menu Navigation Filters -->
-            <div class="space-y-1">
-                <h3 class="font-bold text-xs uppercase text-slate-400 tracking-wider px-3 mb-2" data-key="catHead">Categories</h3>
-                <button class="w-full text-left px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-semibold transition" data-key="catChai">Signature Teas</button>
-                <button class="w-full text-left px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm transition" data-key="catSnacks">HCA Snacks & Bites</button>
-                <button class="w-full text-left px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm transition" data-key="catCold">Mojitos & Shakes</button>
+        <section class="max-w-5xl mx-auto py-12 px-4 space-y-16">
+            <div class="grid md:grid-cols-3 gap-8 items-start bg-white p-6 rounded-2xl border border-slate-200/60 shadow-xs">
+                <div class="text-center bg-[#203226] text-white p-6 rounded-xl border border-stone-800">
+                    <div class="w-28 h-28 bg-stone-700 rounded-full mx-auto mb-4 border-4 border-[#F26E21] flex items-center justify-center"><i class="fa-solid fa-user-tie text-4xl text-stone-300"></i></div>
+                    <h3 class="text-lg font-black text-white">Abhinav Sardhar</h3>
+                    <p class="text-[11px] font-bold text-[#F26E21] uppercase tracking-wide mt-1" data-key="founderBioTitle">Founder, Actor & Philanthropist</p>
+                </div>
+                <div class="md:col-span-2 space-y-4">
+                    <h2 class="text-2xl font-black text-slate-900 border-b pb-2 border-stone-100 uppercase tracking-tight" data-key="founderHeading">The Founder</h2>
+                    <p class="text-slate-700 text-sm leading-relaxed font-semibold italic text-amber-900" data-key="founderP1">Being self-made is not everyone's cup of tea. Well, the founder of Hyderabadi Chai Adda Mr. Sardhar Aka Abhinav has made it look so easy. An all-rounder of all sorts, This Entrepreneur, Philanthropist, Actor/Producer believed in making his own destiny and has inspired many.</p>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-key="founderP2">As an alumnus of Sainik School Korukonda, fitness and discipline come naturally to Sardhar. His strong educational foundation from NIT Warangal and MBA from NIT Trichy has helped him soar high like an eagle. He was associated with top corporates such as Kingfisher, Coca Cola, & Tata Indicom and played a pivotal role in building their corporate brand image.</p>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-key="founderP3">Sardhar's profound interest in Brand Building made him explore the true spirit of entrepreneurship. He was the first to launch Chai as a corporate brand and it took almost a year to get the desired results and make it a scalable product. To fulfil the dream of serving 'Traditional Chai' to the cosmopolitans, the promoters quit their handsome corporate jobs to establish Team Fouress Foods (now Team Unity Foods) in 2015. The journey began since then and the first lounge was set up in Madhapur in Jan 2016.</p>
+                </div>
             </div>
 
-            <!-- E-Commerce Food Grid Layout -->
-            <div class="md:col-span-3">
-                <h2 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-fire text-amber-600"></i> <span data-key="menuMainHead">Popular Item Fast Delivery</span></h2>
-                <div class="grid sm:grid-cols-2 gap-6">
-                    <!-- Item 1 Card -->
-                    <div class="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex gap-4 justify-between">
-                        <div class="flex flex-col justify-between">
-                            <div>
-                                <span class="text-[10px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded uppercase tracking-wide">Veg</span>
-                                <h4 class="font-bold text-slate-900 text-base mt-1" data-key="item1Name">Signature Irani Chai (Flask)</h4>
-                                <p class="text-xs text-slate-500 mt-1 mr-2" data-key="item1Desc">Authentic, rich decoction thick milk formulation served hot in dynamic multi-layer secure heat flasks.</p>
-                            </div>
-                            <span class="font-extrabold text-sm text-slate-900">₹149</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 shrink-0">
-                            <div class="w-24 h-24 bg-amber-100 rounded-xl flex items-center justify-center text-amber-900"><i class="fa-solid fa-mug-saucer text-3xl opacity-40"></i></div>
-                            <button class="bg-white border border-amber-600 text-amber-700 font-bold text-xs px-4 py-1.5 rounded-lg shadow-xs hover:bg-amber-50 transition cursor-pointer" data-key="btnAdd">ADD</button>
-                        </div>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="space-y-4">
+                    <h3 class="text-xl font-black text-slate-900 uppercase" data-key="evoHeading">Evolution Of Hyderabad and its Chai</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-key="evoP1">The oh-so happening! cafe culture has been introduced by a group of Zoroastrian Irani Immigrants, who entered the Princely state of Hyderabad looking for better economic prospects. The divine taste of this beverage with many health benefits instantly won the hearts of Hyderabadis. Soon, every corner, where Irani Chai is served has been evolved into institutions and became popularly known as Irani Cafes.</p>
+                </div>
+                <div class="bg-amber-50/60 p-5 rounded-xl border-l-4 border-[#F26E21] space-y-3">
+                    <h4 class="font-bold text-sm text-amber-950 uppercase" data-key="problemHeading">Bridging The Spatial Sanitation Gap</h4>
+                    <p class="text-slate-700 text-xs leading-relaxed" data-key="problemP1">Though the taste and aroma of Chai are appetizing, the Irani Cafes around the city couldn't attract people from the working-class, mainly women from every sector. Rugged neighborhoods, unhygienic conditions formed the major reasons for the same. And this has been the major induction behind the establishment of Hyderabadi Chai Adda. Brewing our very own 'Traditional Chai' in healthy and hygienic conditions, ensuring peaceful surroundings, welcomes everyone, and ensures an unblemished experience.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-white border border-slate-200 p-5 rounded-xl"><h4 class="font-black text-slate-900 text-base" data-key="mTitle">Our Mission</h4><p class="text-xs text-slate-500 mt-2 leading-relaxed" data-key="mDesc">Redefining The Scope of Serving Our Customers with Quality Products in a Hygienic Environment at a Reachable Price.</p></div>
+                <div class="bg-white border border-slate-200 p-5 rounded-xl"><h4 class="font-black text-slate-900 text-base" data-key="vTitle">Our Vision</h4><p class="text-xs text-slate-500 mt-2 leading-relaxed" data-key="vDesc">To Become a Value Based Retail Chain Cafe and Make it a Larger Than Life Brand.</p></div>
+                <div class="bg-white border border-slate-200 p-5 rounded-xl"><h4 class="font-black text-slate-900 text-base" data-key="vaTitle">Our Values</h4><p class="text-xs text-slate-500 mt-2 leading-relaxed" data-key="vaDesc">Social Empowerment, Stake Holder Delight, Innovation Driven, Creating Excellence and Power Of Endurance.</p></div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="text-center">
+                    <span class="text-xs font-black tracking-widest text-[#F26E21] uppercase bg-amber-500/10 px-3 py-1 rounded-full inline-block" data-key="newsBadge">HCA In the Headlines</span>
+                    <h3 class="text-2xl font-black text-slate-900 mt-2" data-key="newsHeading">Media Room & Press Coverage</h3>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200/60 shadow-xs space-y-2">
+                        <span class="block font-black text-[10px] text-sky-600 tracking-wider uppercase">The Hans India</span>
+                        <h4 class="font-bold text-slate-900 text-sm leading-snug" data-key="news1Title">New Chai Adda for all the tea lovers</h4>
+                        <p class="text-slate-500 text-xs leading-relaxed" data-key="news1Desc">Tollywood actor Srikanth inaugurated the flagship storefront café lounge & grill space setup in Manikonda, highlighting the clean structural fusion of tandoori chai culture inside contemporary settings.</p>
                     </div>
-
-                    <!-- Item 2 Card -->
-                    <div class="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex gap-4 justify-between">
-                        <div class="flex flex-col justify-between">
-                            <div>
-                                <span class="text-[10px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded uppercase tracking-wide">Veg</span>
-                                <h4 class="font-bold text-slate-900 text-base mt-1" data-key="item2Name">Classic Bun Maska (Twin Set)</h4>
-                                <p class="text-xs text-slate-500 mt-1 mr-2" data-key="item2Desc">Freshly baked soft bun lathered with premium layers of salted local table butter cream layers.</p>
-                            </div>
-                            <span class="font-extrabold text-sm text-slate-900">₹89</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 shrink-0">
-                            <div class="w-24 h-24 bg-amber-100 rounded-xl flex items-center justify-center text-amber-900"><i class="fa-solid fa-bread-slice text-3xl opacity-40"></i></div>
-                            <button class="bg-white border border-amber-600 text-amber-700 font-bold text-xs px-4 py-1.5 rounded-lg shadow-xs hover:bg-amber-50 transition cursor-pointer" data-key="btnAdd">ADD</button>
-                        </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200/60 shadow-xs space-y-2">
+                        <span class="block font-black text-[10px] text-emerald-700 tracking-wider uppercase">Telangana Today</span>
+                        <h4 class="font-bold text-slate-900 text-sm leading-snug" data-key="news2Title">Of chai and the airport</h4>
+                        <p class="text-slate-500 text-xs leading-relaxed" data-key="news2Desc">Home Minister Naini Narasimha Reddy inaugurated the fifth major operational node hub directly inside Rajiv Gandhi International Airport (RGIA) in Shamshabad, launching the biodegradable business event flask system.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200/60 shadow-xs space-y-2">
+                        <span class="block font-black text-[10px] text-red-600 tracking-wider uppercase">Indulge (Indian Express)</span>
+                        <h4 class="font-bold text-slate-900 text-sm leading-snug" data-key="news3Title">And That's The Tea!</h4>
+                        <p class="text-slate-500 text-xs leading-relaxed" data-key="news3Desc">Applauding the sleek preparation matrix using completely organic premium leaves, 0% artificial preservatives, and clean Instagram-worthy lounge layouts built for elite cosmopolitans.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 3: ZOMATO STYLE LOUNGE BOOKING        -->
-    <!-- ========================================== -->
-    <div id="view-lounge" class="page-view py-12 px-4 sm:px-8 max-w-5xl mx-auto">
-        <div class="text-center max-w-xl mx-auto mb-12">
-            <h2 class="text-3xl font-bold text-slate-900 mb-2" data-key="loungeHead">Experience Premium HCA Lounge Space</h2>
-            <p class="text-sm text-slate-600" data-key="loungeSub">Reserve immersive corporate desks, group activity centers, or cozy reading corners with localized menu access.</p>
-        </div>
+    <div id="view-menu" class="app-view">
+        <main class="max-w-6xl mx-auto py-10 px-4 w-full grid lg:grid-cols-4 gap-8">
+            <div class="space-y-1 bg-white p-3 rounded-2xl border border-slate-200/60 shadow-xs h-fit sticky top-24">
+                <h3 class="font-black text-xs uppercase text-slate-400 tracking-wider px-3 mb-2" data-key="catHead">Categories</h3>
+                <button onclick="filterMenuCategory('all')" id="cat-all" class="menu-cat-btn w-full text-left px-3 py-2.5 bg-[#203226] text-white rounded-xl text-xs font-bold transition cursor-pointer">All Selections</button>
+                <button onclick="filterMenuCategory('tea')" id="cat-tea" class="menu-cat-btn w-full text-left px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium transition cursor-pointer">Traditional Tea</button>
+                <button onclick="filterMenuCategory('greentea')" id="cat-greentea" class="menu-cat-btn w-full text-left px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium transition cursor-pointer">Organic Green Tea</button>
+                <button onclick="filterMenuCategory('snacks')" id="cat-snacks" class="menu-cat-btn w-full text-left px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium transition cursor-pointer">Snacks & Bun Maska</button>
+            </div>
+            <div class="lg:col-span-3 space-y-6">
+                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-2"><i class="fa-solid fa-bolt text-[#F26E21]"></i> <span data-key="menuMainHead">Popular Item Fast Delivery</span></h2>
+                <div id="liveFoodGrid" class="grid sm:grid-cols-2 gap-4">
+                    </div>
+            </div>
+        </main>
+    </div>
 
-        <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
-            <div>
-                <h3 class="text-xl font-bold text-slate-900 mb-4" data-key="bookFormHead">Reserve a Table Instantly</h3>
-                <div class="space-y-4">
+    <div id="view-lounges" class="app-view">
+        <main class="max-w-4xl mx-auto py-12 px-4 w-full space-y-8">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight" data-key="loungeMainHead">Experience Premium HCA Lounge Space</h2>
+                <p class="text-xs text-slate-500 mt-2" data-key="loungeSubHead">Reserve immersive corporate desks, group activity centers, or cozy reading corners with localized menu access.</p>
+            </div>
+            <div class="grid md:grid-cols-5 gap-8 items-start bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-xs">
+                <form onsubmit="handleLoungeReserve(event)" class="md:col-span-3 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-key="labelOutlet">Select Regional Outlet</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-amber-600">
-                            <option>Raidurg Tech-Hub (HQ)</option>
-                            <option>Jubilee Hills Adda</option>
-                            <option>Tirupati Central Lounge</option>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-key="lblSelectOutlet">Select Regional Outlet</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-[#203226]">
+                            <option>Raidurg Tech-Hub (HQ)</option><option>Jubilee Hills Adda</option><option>Manikonda Café Lounge & Grill</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1" data-key="labelGuests">Guests / People</label>
-                            <input type="number" value="2" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-amber-600">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-key="lblGuests">Guests / People</label>
+                            <input type="number" value="2" min="1" max="12" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-[#203226]">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1" data-key="labelTime">Preferred Slot Time</label>
-                            <input type="time" value="18:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-amber-600">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-key="lblTime">Preferred Slot Time</label>
+                            <input type="time" value="18:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-[#203226]">
                         </div>
                     </div>
-                    <button onclick="alert('Table Booking Simulated Successfully!')" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 rounded-xl transition shadow-xs cursor-pointer text-sm uppercase tracking-wide" data-key="btnBookNow">Confirm Lounge Reservation</button>
+                    <button type="submit" class="w-full bg-[#203226] hover:bg-[#142319] text-white font-black py-3 rounded-xl transition text-xs uppercase tracking-widest cursor-pointer shadow-sm" data-key="btnConfirmRes">Confirm Lounge Reservation</button>
+                </form>
+                <div class="md:col-span-2 bg-[#203226] text-white p-6 rounded-xl border border-stone-800 self-stretch flex flex-col justify-center space-y-3">
+                    <h4 class="font-bold text-amber-400 text-xs uppercase tracking-widest border-b border-stone-800 pb-2" data-key="amHead">Included Lounge Experiences:</h4>
+                    <ul class="text-xs space-y-2.5 text-stone-300">
+                        <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-key="am1">High-Speed Fiber Connected Corporate Workspace Zones</span></li>
+                        <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-key="am2">Social Activity Tables (Chess Packs, Artwork Materials)</span></li>
+                        <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-key="am3">Full Access to Earthen-Pot Gourmet Tea Live Brewing</span></li>
+                    </ul>
                 </div>
             </div>
-            <!-- Interactive Visual Amenity Checkboxes -->
-            <div class="bg-amber-50/50 p-6 rounded-2xl border border-amber-100/60">
-                <h4 class="font-bold text-amber-900 text-sm mb-4" data-key="amenitiesHead">Included Lounge Experiences:</h4>
-                <ul class="space-y-3 text-sm text-slate-600">
-                    <li><i class="fa-solid fa-square-check text-amber-600 mr-2"></i> <span data-key="am1">High-Speed Fiber Connected Corporate Workspace Zones</span></li>
-                    <li><i class="fa-solid fa-square-check text-amber-600 mr-2"></i> <span data-key="am2">Social Activity Tables (Chess Packs, Artwork Materials)</span></li>
-                    <li><i class="fa-solid fa-square-check text-amber-600 mr-2"></i> <span data-key="am3">Full Access to Earthen-Pot Gourmet Tea Live Brewing</span></li>
+        </main>
+    </div>
+
+    <div id="view-franchise" class="app-view">
+        <header class="bg-gradient-to-br from-[#203226] via-[#1A2A20] to-[#111C15] text-white py-12 px-4 text-center border-b-4 border-[#F26E21]">
+            <h1 class="text-2xl md:text-3xl font-black uppercase tracking-tight" data-key="franHeroTitle">Launch Your Own "NeccesiTEA" Franchise Chain</h1>
+            <p class="text-stone-300 text-xs md:text-sm max-w-2xl mx-auto mt-2 leading-relaxed" data-key="franHeroDesc">Partner with India’s highly organized, high-margin, tech-driven tea cafe chain. Tap into robust operational frameworks with localized supply ecosystem routing panels.</p>
+        </header>
+        <main class="max-w-4xl mx-auto py-12 px-4 space-y-8">
+            <div class="grid grid-cols-2 max-w-md mx-auto bg-stone-200 p-1 rounded-xl">
+                <button onclick="toggleFranView('express')" id="tab-express" class="py-2 text-xs font-bold rounded-lg cursor-pointer bg-[#203226] text-white transition">HCA EXPRESS</button>
+                <button onclick="toggleFranView('lounge')" id="tab-lounge" class="py-2 text-xs font-bold rounded-lg cursor-pointer text-slate-600 hover:text-slate-900 transition">HCA LOUNGE</button>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-xs max-w-2xl mx-auto">
+                <div id="panel-express" class="f-panel active space-y-3">
+                    <h3 class="font-black text-lg text-slate-900 uppercase">HCA Express Model</h3>
+                    <p class="text-xs text-slate-600" data-key="expDesc">Perfect for high-footfall compact commercial zones, optimizing operational space with identical deployment setups.</p>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold bg-stone-50 p-3 rounded-lg">
+                        <div class="p-2 border-r border-stone-200"><span class="block text-slate-400 text-[10px]">SPACE</span>100 - 150 Sq.ft</div>
+                        <div class="p-2 border-r border-stone-200"><span class="block text-slate-400 text-[10px]">ROI</span>8 - 12 Months</div>
+                        <div class="p-2"><span class="block text-slate-400 text-[10px]">AGREEMENT</span>5 Years</div>
+                    </div>
+                </div>
+                <div id="panel-lounge" class="f-panel space-y-3">
+                    <h3 class="font-black text-lg text-slate-900 uppercase">HCA Premium Lounge Model</h3>
+                    <p class="text-xs text-slate-600" data-key="loungeDesc">Complete luxury spatial layout engineered for prolonged client seating, extensive menu matrix, and corporate desk setups.</p>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold bg-stone-50 p-3 rounded-lg">
+                        <div class="p-2 border-r border-stone-200"><span class="block text-slate-400 text-[10px]">SPACE</span>500 - 1000 Sq.ft</div>
+                        <div class="p-2 border-r border-stone-200"><span class="block text-slate-400 text-[10px]">ROI</span>8 - 12 Months</div>
+                        <div class="p-2"><span class="block text-slate-400 text-[10px]">AGREEMENT</span>5 Years</div>
+                    </div>
+                </div>
+            </div>
+            <section class="bg-[#203226] text-white p-6 rounded-xl space-y-3">
+                <h3 class="font-bold text-sm uppercase tracking-tight border-b border-stone-800 pb-1" data-key="diffHeading">What's different with us</h3>
+                <ul class="text-xs space-y-2 text-stone-300">
+                    <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> Corporate Chai Culture pioneer, commanding high market authority.</li>
+                    <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <strong class="text-white">Highest profit margins tracking between 60% to 85%.</strong></li>
+                    <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <strong class="text-amber-400">Low upfront investment entry point of 5.50 Lakh + GST for Unit Franchise.</strong></li>
                 </ul>
+            </section>
+        </main>
+    </div>
+
+    <div id="view-careers" class="app-view">
+        <main class="max-w-xl mx-auto py-12 px-4 w-full">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-[#203226] text-white p-6 text-center border-b border-stone-800">
+                    <h2 class="text-lg font-black uppercase tracking-wider" data-key="joinHead">Join The HCA Team</h2>
+                    <p class="text-xs text-stone-400 mt-1" data-key="joinSub">Where Every Sip of Success Begins!</p>
+                </div>
+                <form onsubmit="handleJobFormSubmit(event)" class="p-6 space-y-4">
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name *</label><input type="text" required class="w-full border border-slate-200 bg-stone-50 rounded-lg p-2.5 text-xs font-medium focus:outline-none focus:border-[#203226]"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Email *</label><input type="email" required class="w-full border border-slate-200 bg-stone-50 rounded-lg p-2.5 text-xs font-medium focus:outline-none focus:border-[#203226]"></div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Resume File Upload *</label>
+                        <div class="border-2 border-dashed border-slate-200 hover:border-amber-600 rounded-xl p-4 bg-stone-50 text-center relative cursor-pointer">
+                            <input type="file" required class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileNameLabel(this)">
+                            <span id="fileUploadContainerText" class="text-xs font-bold text-slate-700 block"><i class="fa-solid fa-plus text-[#203226] mr-1"></i> Attach Resume Document</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-[#F26E21] hover:bg-[#d95d16] text-white font-black py-3 rounded-xl tracking-widest text-xs uppercase transition shadow-md cursor-pointer">Submit Application Portfolio</button>
+                </form>
             </div>
+        </main>
+    </div>
+
+    <div id="view-blogs" class="app-view">
+        <main class="max-w-6xl mx-auto py-10 px-4 w-full space-y-6">
+            <div class="flex justify-center gap-3 text-xs font-bold">
+                <button onclick="filterBlogCategory('all')" id="flt-all" class="px-4 py-2 bg-[#203226] text-white rounded-full transition cursor-pointer">All Feed</button>
+                <button onclick="filterBlogCategory('business')" id="flt-business" class="px-4 py-2 bg-stone-200 text-slate-700 hover:bg-stone-300 rounded-full transition cursor-pointer">Business Strategy</button>
+                <button onclick="filterBlogCategory('culture')" id="flt-culture" class="px-4 py-2 bg-stone-200 text-slate-700 hover:bg-stone-300 rounded-full transition cursor-pointer">Chai Lifestyle</button>
+            </div>
+            <div id="dynamicBlogInjectionGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+        </main>
+    </div>
+
+    <div id="cartDrawerPanel" class="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-200">
+        <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-[#203226] text-white">
+            <h3 class="font-bold text-sm uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-[#F26E21]"></i> Platter Inventory Ledger</h3>
+            <button onclick="toggleCartPanel()" class="text-white hover:text-stone-300 text-xl cursor-pointer p-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cartItemsWrapper" class="p-4 overflow-y-auto grow space-y-3"></div>
+        <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                <span>Aggregate Subtotal:</span><span id="cartSubtotalAmount" class="font-black text-slate-900 text-base">₹0</span>
+            </div>
+            <button onclick="alert('Routing secure checkout...')" class="w-full bg-[#F26E21] hover:bg-[#d95d16] text-white font-black py-3 rounded-xl transition text-center text-xs uppercase tracking-widest cursor-pointer shadow-md">Secure Pay Checkout</button>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 4: FRANCHISE MANAGEMENT HUB           -->
-    <!-- ========================================== -->
-    <div id="view-franchise" class="page-view py-12 px-4 sm:px-8 max-w-4xl mx-auto">
-        <div class="bg-amber-900 text-white rounded-3xl p-8 md:p-12 text-center shadow-lg relative overflow-hidden">
-            <h2 class="text-3xl font-extrabold mb-4" data-key="franHead">Launch Your Own "NeccesiTEA" Franchise Chain</h2>
-            <p class="text-amber-100/80 max-w-2xl mx-auto mb-8 text-sm md:text-base" data-key="franDesc">Partner with India’s highly organized, high-margin, tech-driven tea cafe chain. Tap into robust operational frameworks with localized supply ecosystem routing panels.</p>
-            
-            <div class="grid sm:grid-cols-3 gap-4 text-left max-w-2xl mx-auto mb-8">
-                <div class="bg-white/10 p-4 rounded-xl border border-white/10">
-                    <span class="block font-black text-xl text-amber-300">Low Cost</span>
-                    <span class="text-xs text-amber-100/60 shadow-xs" data-key="fStat1">Optimized Infrastructure Setup</span>
-                </div>
-                <div class="bg-white/10 p-4 rounded-xl border border-white/10">
-                    <span class="block font-black text-xl text-amber-300">High Margin</span>
-                    <span class="text-xs text-amber-100/60 shadow-xs" data-key="fStat2">Proven Rapid ROI Systems</span>
-                </div>
-                <div class="bg-white/10 p-4 rounded-xl border border-white/10">
-                    <span class="block font-black text-xl text-amber-300">Full Tech</span>
-                    <span class="text-xs text-amber-100/60 shadow-xs" data-key="fStat3">Integrated Point of Sale Apps</span>
-                </div>
-            </div>
-
-            <button onclick="alert('Franchise Application Form Activated!')" class="bg-white text-amber-900 font-bold px-8 py-3.5 rounded-xl hover:bg-amber-50 transition shadow-md inline-block text-sm uppercase tracking-wider cursor-pointer" data-key="franBtn">Apply for Regional Operations</button>
-        </div>
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white px-6 py-3 rounded-full shadow-2xl border border-slate-200/80 flex items-center gap-8 z-50">
+        <a href="tel:+919704085656" class="text-slate-700 hover:text-amber-700 text-lg"><i class="fa-solid fa-phone"></i></a>
+        <a href="mailto:hyderabadichaiadda@gmail.com" class="text-slate-700 hover:text-amber-700 text-lg"><i class="fa-solid fa-envelope"></i></a>
+        <a href="https://wa.me/919704085656" target="_blank" class="text-green-600 text-xl"><i class="fa-brands fa-whatsapp"></i></a>
     </div>
 
-    <!-- GLOBAL FOOTER BAR -->
-    <footer class="bg-slate-950 text-slate-400 pt-12 pb-6 px-4 sm:px-8 border-t border-slate-900 mt-20 text-xs sm:text-sm">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 mb-8">
-            <div>
-                <h4 class="text-white font-bold mb-3 text-base">HYDERABADI CHAI ADDA</h4>
-                <p class="text-xs leading-relaxed" data-key="footDesc">Redefining India's tea ritual via standardized clean models. Merging premium corporate lounge environments with frictionless digital delivery logistics execution pipelines.</p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-3 text-base" data-key="footHeadHQ">Corporate Headquarters</h4>
-                <p class="text-xs leading-relaxed">
-                    <i class="fa-solid fa-location-dot text-amber-500 mr-1.5"></i> Flat 508, Techno One Building,<br>
-                    Above ICICI & Axis Banks, Raidurg,<br>
-                    Hyderabad, Telangana - 500008.
-                </p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-3 text-base" data-key="footHeadConnect">Support Matrix</h4>
-                <span class="block font-bold text-white text-base mb-1"><i class="fa-solid fa-envelope text-amber-400 mr-2"></i>partner@hyderabadichaiadda.com</span>
-                <span class="text-xs" data-key="footSupportSub">Reach terminal network specialists for dynamic franchise tracking operations.</span>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto pt-6 border-t border-slate-900 text-center text-xs text-slate-500">
-            &copy; 2026 Hyderabadi Chai Adda Platforms. <span data-key="footCopyright">All rights reserved. Proposals optimization interface blueprint tracking.</span>
-        </div>
+    <footer class="bg-slate-950 text-slate-500 py-10 px-4 text-center text-xs border-t border-stone-900 pb-24 mt-auto">
+        <p class="font-bold text-white uppercase tracking-widest mb-1">Team Unity Foods LLP</p>
+        <p class="max-w-md mx-auto leading-relaxed mb-4">FLAT NO: 508, Techno one Building, Above ICICI and AXIS Bank Raidurg, Hyderabad, Telangana - 500104</p>
+        <p>&copy; 2026 Hyderabadi Chai Adda. Developed by: That's Awesome! Studio. All rights reserved.</p>
     </footer>
 
-    <!-- REAL-TIME ENTERPRISE TRANSLATION AND CLIENT-SIDE ROUTER ENGINE -->
     <script>
-        let currentLanguage = 'en';
+        // Router Engine Runtime
+        function navigateToView(viewId) {
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
 
-        // High Fidelity Dictionary matching specific Swiggy/Zomato/Zepto parameters
-        const localizationDictionary = {
-            en: {
-                geoCity: "Raidurg, Hyderabad",
-                navHome: "Home", navOrder: "Order Online", navLounge: "Book Lounge", navFranchise: "Franchise",
-                heroBadge: "Est. 2016 | Premium Chain",
-                heroTitle: "The Modern Hub for Authentic Irani Chai Culture",
-                heroDesc: "From serving our milestone first legendary cup to the Late Shri Ratan Tata at T-Hub with KTR, we bridge time-honored taste with impeccable hygiene.",
-                heroBtnOrder: "Order Instant Delivery", heroBtnLounge: "Explore Lounges",
-                statHead: "Premium Social Hubs", statDesc: "Modern clean environments featuring board games, libraries, and strict hygiene paradigms for families and professionals alike.",
-                searchPlaceholder: "Search for Chai, Bun Maska, Snacks...",
-                catHead: "Categories", catChai: "Signature Teas", catSnacks: "HCA Snacks & Bites", catCold: "Mojitos & Shakes",
-                menuMainHead: "Popular Item Fast Delivery",
-                item1Name: "Signature Irani Chai (Flask)", item1Desc: "Authentic, rich decoction thick milk formulation served hot in dynamic multi-layer secure heat flasks.",
-                item2Name: "Classic Bun Maska (Twin Set)", item2Desc: "Freshly baked soft bun lathered with premium layers of salted local table butter cream layers.",
-                btnAdd: "ADD",
-                loungeHead: "Experience Premium HCA Lounge Space",
-                loungeSub: "Reserve immersive corporate desks, group activity centers, or cozy reading corners with localized menu access.",
-                bookFormHead: "Reserve a Table Instantly", labelOutlet: "Select Regional Outlet",
-                labelGuests: "Guests / People", labelTime: "Preferred Slot Time", btnBookNow: "Confirm Lounge Reservation",
-                amenitiesHead: "Included Lounge Experiences:",
-                am1: "High-Speed Fiber Connected Corporate Workspace Zones",
-                am2: "Social Activity Tables (Chess Packs, Artwork Materials)",
-                am3: "Full Access to Earthen-Pot Gourmet Tea Live Brewing",
-                franHead: "Launch Your Own 'NeccesiTEA' Franchise Chain",
-                franDesc: "Partner with India’s highly organized, high-margin, tech-driven tea cafe chain. Tap into robust operational frameworks with localized supply ecosystem routing panels.",
-                fStat1: "Optimized Infrastructure Setup", fStat2: "Proven Rapid ROI Systems", fStat3: "Integrated Point of Sale Apps",
-                franBtn: "Apply for Regional Operations",
-                footDesc: "Redefining India's tea ritual via standardized clean models. Merging premium corporate lounge environments with frictionless digital delivery logistics execution pipelines.",
-                footHeadHQ: "Corporate Headquarters", footHeadConnect: "Support Matrix",
-                footSupportSub: "Reach terminal network specialists for dynamic franchise tracking operations.",
-                footCopyright: "All rights reserved. Proposals optimization interface blueprint tracking."
-            },
-            te: {
-                geoCity: "రాయ్‌దుర్గ్, హైదరాబాద్",
-                navHome: "హోమ్", navOrder: "ఆన్‌లైన్ ఆర్డర్", navLounge: "లాంజ్ బుకింగ్", navFranchise: "ఫ్రాంచైజీ",
-                heroBadge: "స్థాపితం 2016 | ప్రీమియం చైన్",
-                heroTitle: "అసలైన ఇరానీ చాయ్ సంస్కృతికి ఆధునిక వేదిక",
-                heroDesc: "టి-హబ్‌లో కేటీఆర్ సమక్షంలో దివంగత శ్రీ రతన్ టాటా గారికి మా మొట్టమొదటి కప్పు చాయ్ అందించిన జ్ఞాపకాలతో, మేము సాంప్రదాయ రుచిని మరియు అత్యుత్తమ పరిశుభ్రతను అందిస్తున్నాము.",
-                heroBtnOrder: "ఇన్‌స్టంట్ డెలివరీ ఆర్డర్", heroBtnLounge: "లాంజ్‌లను అన్వేషించండి",
-                statHead: "ప్రీమియం సోషల్ హబ్స్", statDesc: "కుటుంబాలు మరియు ఉద్యోగుల కోసం బోర్డ్ గేమ్స్, లైబ్రరీ మరియు కఠినమైన పరిశుభ్రత ప్రమాణాలతో కూడిన ఆధునిక ఆహ్లాదకరమైన వాతావరణం.",
-                searchPlaceholder: "చాయ్, బన్ మస్కా, స్నాక్స్ కోసం వెతకండి...",
-                catHead: "విభాగాలు", catChai: "సిగ్నేచర్ చాయ్స్", catSnacks: "HCA స్నాక్స్ & బైట్స్", catCold: "మోహితోస్ & షేక్స్",
-                menuMainHead: "ప్రజాదరణ పొందిన వంటకాలు - వేగవంతమైన డెలివరీ",
-                item1Name: "సిగ్నేచర్ ఇరానీ చాయ్ (ఫ్లాస్క్)", item1Desc: "చిక్కటి పాలు, ప్రత్యేక డికాషన్‌తో తయారు చేయబడిన అసలైన ఇరానీ చాయ్ - మల్టీ-లేయర్ హీట్ ఫ్లాస్క్‌లో వేడిగా డెలివరీ చేయబడుతుంది.",
-                item2Name: "క్లాసిక్ బన్ మస్కా (ట్విన్ సెట్)", item2Desc: "తాజా బేకరీ బన్, లోపల తగినంత పరిమాణంలో సాల్టెడ్ టేబుల్ బట్టర్ క్రీమ్ పొరలతో రుచికరంగా ఉంటుంది.",
-                btnAdd: "యాడ్",
-                loungeHead: "ప్రీమియం HCA లాంజ్ అనుభూతిని పొందండి",
-                loungeSub: "కార్పొరేట్ వర్క్‌స్పేస్ డెస్క్‌లు, గ్రూప్ యాక్టివిటీ సెంటర్లు లేదా ప్రశాంతమైన రీడింగ్ కార్నర్‌లను ముందుగానే రిజర్వ్ చేసుకోండి.",
-                bookFormHead: "టేబుల్‌ను తక్షణమే రిజర్వ్ చేసుకోండి", labelOutlet: "ప్రాంతీయ అవుట్‌లెట్‌ను ఎంచుకోండి",
-                labelGuests: "అతిథులు / వ్యక్తులు", labelTime: "క్యాటగిరీ సమయం", btnBookNow: "లాంజ్ రిజర్వేషన్‌ను ఖరారు చేయండి",
-                amenitiesHead: "లాంజ్‌లో లభించే సేవలు:",
-                am1: "హై-స్పీడ్ ఫైబర్ కనెక్ట్ చేయబడిన కార్పొరేట్ వర్క్‌స్పేస్ జోన్‌లు",
-                am2: "సోషల్ యాక్టివిటీ టేబుల్స్ (చెస్ ప్యాక్‌లు, ఆర్ట్‌వర్క్ మెటీరియల్స్)",
-                am3: "మట్టి పాత్రలలో లైవ్‌గా తయారయ్యే గౌర్మెట్ టీ యాక్సెస్",
-                franHead: "మీ స్వంత 'NeccesiTEA' ఫ్రాంచైజీ చైన్‌ను ప్రారంభించండి",
-                franDesc: "భారతదేశంలో అత్యంత వ్యవస్థీకృత, అత్యధిక లాభాలు అందించే టెక్-డ్రైవెన్ టీ కేఫ్ చైన్‌తో భాగస్వామి అవ్వండి. స్థానిక సప్లై చైన్ మరియు ఆపరేషనల్ సపోర్ట్ అందుకోండి.",
-                fStat1: "తక్కువ పెట్టుబడి మౌలిక సదుపాయాలు", fStat2: "వేగవంతమైన లాభాల (ROI) విధానం", fStat3: "ఇంటిగ్రేటెడ్ పాయింట్ ఆఫ్ సేల్ (POS) యాప్స్",
-                franBtn: "ప్రాంతీయ కార్యకలాపాల కోసం దరఖాస్తు చేసుకోండి",
-                footDesc: "ప్రీమియం కార్పొరేట్ లాంజ్ వాతావరణాన్ని డిజిటల్ డెలివరీ లాజిస్టిక్స్‌తో అనుసంధానిస్తూ, భారతదేశపు చాయ్ సంస్కృతిని సరికొత్తగా మారుస్తున్నాము.",
-                footHeadHQ: "కార్పొరేట్ ప్రధాన కార్యాలయం", footHeadConnect: "సపోర్ట్ మాట్రిక్స్",
-                footSupportSub: "ఫ్రాంచైజీ ట్రాకింగ్ కార్యకలాపాల కోసం నెట్‌వర్క్ నిపుణులను సంప్రదించండి.",
-                footCopyright: "అన్ని హక్కులు ప్రత్యేకించబడినవి. ప్రపోజల్స్ ఆప్టిమైజేషన్ ఇంటర్‌ఫేస్ బ్లూప్రింట్."
-            }
-        };
-
-        // UI Client Side Routing Logic (Single Page Application Multi-View pattern)
-        function navigateTo(viewId) {
-            // Hide all views
-            document.querySelectorAll('.page-view').forEach(view => {
-                view.classList.remove('active');
+            document.querySelectorAll('nav button').forEach(btn => {
+                if (btn.id.startsWith('nav-')) btn.className = "text-stone-300 hover:text-white cursor-pointer transition";
             });
-            // Show selected view
-            const targetView = document.getElementById(`view-${viewId}`);
-            if (targetView) {
-                targetView.classList.add('active');
-            }
-            // Auto scroll to top of viewport
+            const activeNavBtn = document.getElementById(`nav-${viewId}`);
+            if (activeNavBtn) activeNavBtn.className = "text-[#F26E21] border-b-2 border-[#F26E21] pb-1 cursor-pointer transition";
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Translation Engine Runtime Logic
-        function toggleLanguage() {
-            currentLanguage = currentLanguage === 'en' ? 'te' : 'en';
-            
-            // Switch navigation button visual pointer
-            document.getElementById('langIndicator').innerText = currentLanguage === 'en' ? 'తెలుగు' : 'English';
-            
-            // Update every localized data point on page template dom
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (localizationDictionary[currentLanguage][key]) {
-                    // Detect if form element element context
-                    if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                        element.setAttribute('placeholder', localizationDictionary[currentLanguage][key]);
-                    } else {
-                        element.innerText = localizationDictionary[currentLanguage][key];
-                    }
-                }
+        // Bilingual Pipeline Framework Dictionary
+        const localizationData = {
+            en: {
+                lblRefreshing: "Refreshingly Delightful", heroTitle: "Hyderabadi Chai Adda",
+                heroDesc: "Taste the authentic flavours of Hyderabad with our premium chai, where tradition meets modern comfort. Since 2016, we've been serving refreshingly delightful moments, one cup at a time.",
+                btnExploreMenu: "Explore Our Menu", btnOwnFranchise: "Own a Franchise",
+                lblCelebrityTea: "Celebrity Tea Company", lblCelebrityTeaDesc: "HCA is known as the celebrity tea company that gives an enriched experience of the tea business with value for money.",
+                founderBioTitle: "Founder, Actor & Philanthropist", founderHeading: "The Founder",
+                founderP1: "Being self-made is not everyone's cup of tea. Well, the founder of Hyderabadi Chai Adda Mr. Sardhar Aka Abhinav has made it look so easy. An all-rounder of all sorts, This Entrepreneur, Philanthropist, Actor/Producer believed in making his own destiny and has inspired many.",
+                founderP2: "As an alumnus of Sainik School Korukonda, fitness and discipline come naturally to Sardhar. His strong educational foundation from NIT Warangal and MBA from NIT Trichy has helped him soar high like an eagle. He was associated with top corporates such as Kingfisher, Coca Cola, & Tata Indicom and played a pivotal role in building their corporate brand image.",
+                founderP3: "Sardhar's profound interest in Brand Building made him explore the true spirit of entrepreneurship. He was the first to launch Chai as a corporate brand and it took almost a year to get the desired results and make it a scalable product. To fulfil the dream of serving 'Traditional Chai' to the cosmopolitans, the promoters quit their handsome corporate jobs to establish Team Fouress Foods (now Team Unity Foods) in 2015. The journey began since then and the first lounge was set up in Madhapur in Jan 2016.",
+                evoHeading: "Evolution Of Hyderabad and its Chai",
+                evoP1: "The oh-so happening! cafe culture has been introduced by a group of Zoroastrian Irani Immigrants, who entered the Princely state of Hyderabad looking for better economic prospects. The divine taste of this beverage with many health benefits instantly won the hearts of Hyderabadis. Soon, every corner, where Irani Chai is served has been evolved into institutions and became popularly known as Irani Cafes.",
+                problemHeading: "Bridging The Spatial Sanitation Gap",
+                problemP1: "Though the taste and aroma of Chai are appetizing, the Irani Cafes around the city couldn't attract people from the working-class, mainly women from every sector. Rugged neighborhoods, unhygienic conditions formed the major reasons for the same. And this has been the major induction behind the establishment of Hyderabadi Chai Adda. Brewing our very own 'Traditional Chai' in healthy and hygienic conditions, ensuring peaceful surroundings, welcomes everyone, and ensures an unblemished experience.",
+                mTitle: "Our Mission", mDesc: "Redefining The Scope of Serving Our Customers with Quality Products in a Hygienic Environment at a Reachable Price.",
+                vTitle: "Our Vision", vDesc: "To Become a Value Based Retail Chain Cafe and Make it a Larger Than Life Brand.",
+                vaTitle: "Our Values", vaDesc: "Social Empowerment, Stake Holder Delight, Innovation Driven, Creating Excellence and Power Of Endurance.",
+                newsBadge: "HCA In the Headlines", newsHeading: "Media Room & Press Coverage",
+                news1Title: "New Chai Adda for all the tea lovers", news1Desc: "Tollywood actor Srikanth inaugurated the flagship storefront café lounge & grill space setup in Manikonda, highlighting the clean structural fusion of tandoori chai culture inside contemporary settings.",
+                news2Title: "Of chai and the airport", news2Desc: "Home Minister Naini Narasimha Reddy inaugurated the fifth major operational node hub directly inside Rajiv Gandhi International Airport (RGIA) in Shamshabad, launching the biodegradable business event flask system.",
+                news3Title: "And That's The Tea!", news3Desc: "Applauding the sleek preparation matrix using completely organic premium leaves, 0% artificial preservatives, and clean Instagram-worthy lounge layouts built for elite cosmopolitans.",
+                catHead: "Categories", menuMainHead: "Popular Item Fast Delivery",
+                loungeMainHead: "Experience Premium HCA Lounge Space", loungeSubHead: "Reserve immersive corporate desks, group activity centers, or cozy reading corners with localized menu access.",
+                lblSelectOutlet: "Select Regional Outlet", lblGuests: "Guests / People", lblTime: "Preferred Slot Time", btnConfirmRes: "Confirm Lounge Reservation",
+                amHead: "Included Lounge Experiences:", am1: "High-Speed Fiber Connected Corporate Workspace Zones", am2: "Social Activity Tables (Chess Packs, Artwork Materials)", am3: "Full Access to Earthen-Pot Gourmet Tea Live Brewing",
+                franHeroTitle: "Launch Your Own \"NeccesiTEA\" Franchise Chain", franHeroDesc: "Partner with India’s highly organized, high-margin, tech-driven tea cafe chain. Tap into robust operational frameworks with localized supply ecosystem routing panels.",
+                expDesc: "Perfect for high-footfall compact commercial zones, optimizing operational space with identical deployment setups.",
+                loungeDesc: "Complete luxury spatial layout engineered for prolonged client seating, extensive menu matrix, and corporate desk setups.",
+                diffHeading: "What's different with us", joinHead: "Join The HCA Team", joinSub: "Where Every Sip of Success Begins!"
+            },
+            te: {
+                lblRefreshing: "రిఫ్రెషింగ్లీ డిలైట్‌ఫుల్", heroTitle: "హైదరాబాదీ చాయ్ అడ్డా",
+                heroDesc: "సాंప్రదాయ రుచులు మరియు ఆధునిక సౌకర్యాల కలయికతో లభించే అసలైన హైదరాబాదీ ప్రీమియం చాయ్ రుచిని ఆస్వాదించండి. 2016 నుండి, మేము ప్రతి కప్పుతోనూ ఆహ్లాదకరమైన క్షణాలను అందిస్తున్నాము.",
+                btnExploreMenu: "మెనూని అన్వేషించండి", btnOwnFranchise: "ఫ్రాంచైజీ పొందండి",
+                lblCelebrityTea: "సెలబ్రిటీ టీ కంపెనీ", lblCelebrityTeaDesc: "తక్కువ పెట్టుబడితో ఎక్కువ లాభాలు అందిస్తూ, వినియోగదారులకు అద్భుతమైన విలువను చేకూరుస్తున్న ప్రముఖ టీ బ్రాండ్ గా HCA గుర్తింపు పొందింది.",
+                founderBioTitle: "వ్యవస్థాపకుడు, నటుడు & పరోపకారి", founderHeading: "వ్యవస్థాపకుని ప్రస్థానం",
+                founderP1: "స్వయంకృషితో ఎదగడం అందరికీ సాధ్యం కాదు, కానీ హైదరాబాదీ చాయ్ అడ్డా వ్యవస్థాపకులు శ్రీ అభినవ్ సర్ధార్ గారు దీనిని ఎంతో సులభతరం చేశారు. ఆల్ రౌండర్ అయిన ఈ వ్యాపారవేత్త, పరోపకారి, నటుడు/నిర్మాత తన స్వంత భవితవ్యాన్ని నిర్మించుకోవడమే కాక ఎందరికో స్ఫూర్తిగా నిలిచారు.",
+                founderP2: "సైనిక్ స్కూల్ కోరుకొండ పూర్వ విద్యార్థి కావడంతో క్రమశిక్షణ, ఫిట్‌నెస్ ఆయన నైజంలో భాగమయ్యాయి. ఎన్ఐటి వరంగల్ లో గ్రాడ్యుయేషన్, ఎన్ఐటి తిరుచిరాపల్లిలో ఎంబీఏ పూర్తి చేసిన ఆయన, కింగ్‌ఫిషర్, కోకా కోలా, టాటా ఇండికామ్ వంటి అగ్రశ్రేణి కార్పొరేట్ సంస్థల బ్రాండ్ ఇమేజ్ నిర్మాణంలో కీలక పాత్ర పోషించారు.",
+                founderP3: "బ్రాండ్ బిల్డింగ్‌పై ఉన్న ఆసక్తితో, ఆయన టీ వ్యాపారాన్ని ఒక కార్పొరేట్ బ్రాండ్ గా మార్చి, మొదటి లౌంజ్‌ను జనవరి 2016లో మాదాపూర్‌లో ప్రారంభించారు. ఈ అద్భుతమైన ప్రయాణం కోసం ప్రమోటర్లు తమ ప్రతిష్టాత్మక కార్పొరేట్ ఉద్యోగాలను వదులుకుని 2015లో టీమ్ ఫోరెస్ ఫుడ్స్ (ప్రస్తుతం టీమ్ Unity ఫుడ్స్) ను స్థాపించారు.",
+                evoHeading: "హైదరాబాద్ మరియు చాయ్ పరిణామ క్రమం",
+                evoP1: "హైదరాబాద్ లో చాయ్ సంస్కృతి అనేది జోరాస్ట్రియన్ ఇరానీ వలసదారుల ద్వారా ప్రారంభమైంది. అద్భుతమైన రుచి, ఆరోగ్య ప్రయోజనాలు ఉన్న ఈ పానీయం త్వరగా హైదరాబాదీల మనసు గెలుచుకుంది. కాలక్రమేణా, నగరంలోని ప్రతి ఇరానీ చాయ్ సెంటర్ ఒక సుప్రసిద్ధ సంస్థగా మరియు 'ఇరానీ కేఫ్' లుగా ప్రాచుర్యం పొందాయి.",
+                problemHeading: "పరిశుభ్రత సమస్యకు ఆధునిక పరిష్కారం",
+                problemP1: "ఇరానీ చాయ్ రుచి అద్భుతంగా ఉన్నప్పటికీ, పాత పద్ధతిలోని కేఫ్‌లు మరియు వాటి పరిసరాలలోని అపరిశుభ్ర వాతావరణం వల్ల మహిళలు, ఉద్యోగస్థులు అక్కడికి వెళ్ళడానికి సంకోచించేవారు. ఈ ప్రధాన లోపాన్ని తొలగించి, అత్యంత పరిశుభ్రమైన, ప్రశాంతమైన మరియు గౌరవప్రదమైన వాతావరణంలో అందరికీ సాంప్రదాయ చాయ్ అందించాలనే సంకల్పంతోనే 'హైదరాబాదీ చాయ్ అడ్డా' స్థాపించబడింది.",
+                mTitle: "మా లక్ష్యం", mDesc: "అత్యంత పరిశుభ్రమైన వాతావరణంలో, అందరికీ అందుబాటులో ఉండే ధరలలో నాణ్యమైన ఉత్పత్తులను వినియోగదారులకు అందించడం.",
+                vTitle: "మా విజన్", vDesc: "విలువల ఆధారిత రిటైల్ చైన్ కేఫ్‌గా ఎదిగి, ఈ బ్రాండ్ ను దేశవ్యాప్తంగా అగ్రస్థానంలో నిలపడం.",
+                vaTitle: "మా విలువలు", vaDesc: "సామాజిక సాధికారత, భాగస్వాముల సంతృప్తి, నిరంతర ఆవిష్కరణలు, అత్యుత్తమ ప్రమాణాలు మరియు దృఢ సంకల్పం.",
+                newsBadge: "వార్తలలో హెచ్.సి.ఎ", newsHeading: "మీడియా & పత్రికా ప్రకటనలు",
+                news1Title: "టీ ప్రేమికుల కోసం సరికొత్త చాయ్ అడ్డా", news1Desc: "టాలీవుడ్ నటుడు శ్రీకాంత్ గారు మణికొండలో ఫ్లాగ్‌షిప్ కేఫ్ లాంజ్ & గ్రిల్ స్పేస్‌ను ప్రారంభించారు. సాంప్రదాయ తందూరి చాయ్ సంస్కృతిని ఆధునిక శైలిలో ఇక్కడ అద్భుతంగా రూపొందించారు.",
+                news2Title: "శంషాబాద్ ఎయిర్‌పోర్ట్‌లో చాయ్ అడ్డా", news2Desc: "హోంమంత్రి నాయిని నరసింహారెడ్డి గారు రాజీవ్ గాంధీ అంతర్జాతీయ విమానాశ్రయం (RGIA) లో 5వ అవుట్‌లెట్‌ను మరియు కార్యాలయాల కోసం ప్రత్యేక బయోడిగ్రేడబుల్ ఫ్లాస్క్ సిస్టమ్‌ను ప్రారంభించారు.",
+                news3Title: "ఇండియన్ ఎక్స్‌ప్రెస్ ప్రశంసలు!", news3Desc: "エలాంటి ప్రిజర్వేటివ్స్ లేని సహజసిద్ధమైన సేంద్రీయ టీ ఆకులు మరియు అద్భుతమైన ఇంటీరియర్స్‌తో కూడిన లౌంజ్ వాతావరణాన్ని పత్రికలు ప్రత్యేకంగా అభినందించాయి.",
+                catHead: "విభాగాలు", menuMainHead: "ప్రజాదరణ పొందిన వంటకాలు - వేగవంతమైన డెలివరీ",
+                loungeMainHead: "ప్రీమియం HCA లాంజ్ అనుభూతిని పొందండి", loungeSubHead: "కార్పొరేట్ వర్క్‌స్పేస్ డెస్క్‌లు, గ్రూప్ యాక్టివిటీ సెంటర్లు లేదా ప్రశాంతమైన రీడింగ్ కార్నర్‌లను ముందుగానే రిజర్వ్ చేసుకోండి.",
+                lblSelectOutlet: "ప్రాంతీయ అవుట్‌లెట్‌ను ఎంచుకోండి", lblGuests: "అтиథులు / వ్యక్తులు", lblTime: "క్యాటగిరీ సమయం", btnConfirmRes: "లాంజ్ రిజర్వేషన్‌ను ఖరారు చేయండి",
+                amHead: "లాంజ్‌లో లభించే సేవలు:", am1: "హై-స్పీడ్ ఫైబర్ కనెక్ట్ చేయబడిన కార్పొరేట్ వర్క్‌స్పేస్ జోన్ కార్నర్స్", am2: "సోషల్ యాక్టివిటీ టేబుల్స్ (చెస్ ప్యాక్‌లు, ఆర్ట్‌వర్క్ మెటీరియల్స్)", am3: "మట్టి పాత్రలలో లైవ్‌గా తయారయ్యే గౌర్మెట్ టీ యాక్సెస్",
+                franHeroTitle: "మీ స్వంత 'NeccesiTEA' ఫ్రాంచైజీ చైన్‌ను ప్రారంభించండి", franHeroDesc: "భారతదేశంలో అత్యంత వ్యవస్థీకృత, అత్యధిక లాభాలు అందించే టెక్-డ్రైవెన్ టీ కేఫ్ చైన్‌తో భాగస్వామి అవ్వండి. స్థానిక సప్లై చైన్ మరియు ఆపరేషనల్ సపోర్ట్ అందుకోండి.",
+                expDesc: "తక్కువ పెట్టుబడి మౌలిక సదుపాయాలతో కూడిన కాంపాక్ట్ కమర్షియల్ జోన్ల కోసం ఈ మోడల్ అనువైనది.",
+                loungeDesc: "కార్పొరేట్ వర్క్‌స్పేస్ డెస్క్‌లు మరియు ఎక్కువ సమయం గడపడానికి అనువైన ప్రీమియం ఇంటీరియర్స్ కలిగిన లౌంజ్ మోడల్.",
+                diffHeading: "మా ప్రత్యేకతలు", joinHead: "HCA టీమ్‌లో చేరండి", joinSub: "విజయవంతమైన ప్రయాణానికి ఇక్కడే పునాది!"
+            }
+        };
+
+        let currentLang = localStorage.getItem('hca_lang') || 'en';
+        function applyLocalization() {
+            document.getElementById('langIndicator').innerText = currentLang === 'en' ? 'తెలుగు' : 'English';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (localizationData[currentLang][key]) el.innerText = localizationData[currentLang][key];
+            });
+            renderMenuGrid();
+            renderInjectedBlogFeed();
+        }
+
+        function toggleGlobalLanguage() {
+            currentLang = currentLang === 'en' ? 'te' : 'en';
+            localStorage.setItem('hca_lang', currentLang);
+            applyLocalization();
+        }
+
+        // Menu Inventory Database Matrix
+        let menuCategory = 'all';
+        let internalCart = [];
+        const menuDataset = [
+            { id: 'm1', cat: 'tea', nameEn: 'Signature Irani Chai (Flask)', nameTe: 'సిగ్నేచర్ ఇరానీ చాయ్ (Flask)', descEn: 'Thick milk slow decoction luxury formulation brew served hot.', descTe: 'చిక్కటి పాలు, ప్రత్యేక డికాషన్‌తో తయారు చేయబడిన అసలైన ఇరానీ చాయ్.', price: 149, icon: 'fa-mug-hot' },
+            { id: 'm2', cat: 'snacks', nameEn: 'Classic Bun Maska (Twin Set)', nameTe: 'క్లాసిక్ బన్ మస్కా (Twin Set)', descEn: 'Freshly baked soft buns with premium layers of salted local butter.', descTe: 'తాజా బేకరీ బన్, లోపల తగినంత పరిమాణంలో సాల్టెడ్ టేబుల్ బట్టర్.', price: 89, icon: 'fa-bread-slice' },
+            { id: 'm3', cat: 'greentea', nameEn: 'Organic Wellness Green Tea', nameTe: 'ఆరగానిక్ వెల్నెస్ గ్రీన్ టీ', descEn: 'Premium picked field leaves infused carefully carrying antioxidant properties.', descTe: 'యాంటీఆక్సిడెంట్ గుణాలు కలిగిన ప్రీమియం సేంద్రీయ గ్రీన్ టీ ఆకుల మిశ్రమం.', price: 110, icon: 'fa-glass-water' },
+            { id: 'm4', cat: 'snacks', nameEn: 'Premium Osmania Biscuits (Quartet)', nameTe: 'ప్రీమియం ఉస్మానియా బిస్కెట్లు', descEn: 'Traditional baked companion matching Irani tea dynamics.', descTe: 'ఇరానీ చాయ్‌తో కలిపి తినే హైదరాబాద్ సంప్రదాయ ఉప్పు-తీపి బిస్కెట్లు.', price: 45, icon: 'fa-cookie' },
+            { id: 'm5', cat: 'snacks', nameEn: 'Golden Crispy Fries', nameTe: 'గోల్డెన్ క్రిస్పీ ఫ్రైస్', descEn: 'Deep golden potato sticks served hot alongside tomato dressing dips.', descTe: 'టొమాటో సాస్ మరియు మాయోనైస్ డిప్స్‌తో వేడిగా అందించబడే క్రిస్పీ పొటాటో ఫ్రైస్.', price: 99, icon: 'fa-plate-wheat' }
+        ];
+
+        function renderMenuGrid() {
+            const container = document.getElementById('liveFoodGrid');
+            if (!container) return;
+            const targetData = menuCategory === 'all' ? menuDataset : menuDataset.filter(item => item.cat === menuCategory);
+            container.innerHTML = '';
+
+            targetData.forEach(item => {
+                const name = currentLang === 'en' ? item.nameEn : item.nameTe;
+                const desc = currentLang === 'en' ? item.descEn : item.descTe;
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/60 shadow-xs flex justify-between gap-4 items-center">
+                        <div>
+                            <span class="text-[9px] bg-green-100 text-green-800 font-bold px-1.5 py-0.5 rounded uppercase">Veg</span>
+                            <h4 class="font-bold text-slate-900 text-sm mt-1">${name}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${desc}</p>
+                            <span class="block font-black text-xs text-slate-900 mt-2">₹${item.price}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 shrink-0">
+                            <div class="w-14 h-14 bg-stone-100 rounded-lg flex items-center justify-center text-slate-400"><i class="fa-solid ${item.icon} text-xl"></i></div>
+                            <button onclick="pushToCart('${item.id}')" class="bg-white border border-[#203226] text-[#203226] font-black text-[10px] px-3 py-1 rounded-md hover:bg-slate-50 cursor-pointer">ADD</button>
+                        </div>
+                    </div>
+                `;
             });
         }
+
+        function filterMenuCategory(catKey) {
+            menuCategory = catKey;
+            document.querySelectorAll('.menu-cat-btn').forEach(b => b.classList.remove('bg-[#203226]', 'text-white', 'font-bold'));
+            document.getElementById(`cat-${catKey}`).classList.add('bg-[#203226]', 'text-white', 'font-bold');
+            renderMenuGrid();
+        }
+
+        function toggleCartPanel() { document.getElementById('cartDrawerPanel').classList.toggle('translate-x-full'); }
+
+        function pushToCart(id) {
+            const product = menuDataset.find(p => p.id === id);
+            const entry = internalCart.find(c => c.id === id);
+            if (entry) entry.qty += 1;
+            else internalCart.push({ ...product, qty: 1 });
+            syncCartUI();
+        }
+
+        function adjustQty(id, delta) {
+            const entry = internalCart.find(c => c.id === id);
+            if (!entry) return;
+            entry.qty += delta;
+            if (entry.qty <= 0) internalCart = internalCart.filter(c => c.id !== id);
+            syncCartUI();
+        }
+
+        function syncCartUI() {
+            const count = internalCart.reduce((acc, c) => acc + c.qty, 0);
+            const total = internalCart.reduce((acc, c) => acc + (c.price * c.qty), 0);
+            document.getElementById('cartCountBadge').innerText = count;
+            document.getElementById('cartSubtotalAmount').innerText = `₹${total}`;
+            const wrapper = document.getElementById('cartItemsWrapper');
+            wrapper.innerHTML = '';
+            internalCart.forEach(c => {
+                const name = currentLang === 'en' ? c.nameEn : c.nameTe;
+                wrapper.innerHTML += `
+                    <div class="flex justify-between items-center border-b border-stone-100 pb-2 text-xs">
+                        <div><h5 class="font-bold text-slate-800">${name}</h5><span>₹${c.price}</span></div>
+                        <div class="flex items-center gap-2 bg-slate-100 px-2 py-0.5 rounded">
+                            <button onclick="adjustQty('${c.id}', -1)" class="font-bold cursor-pointer">-</button>
+                            <span class="font-black">${c.qty}</span>
+                            <button onclick="adjustQty('${c.id}', 1)" class="font-bold cursor-pointer">+</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Table Reservation Validation Handler
+        function handleLoungeReserve(e) {
+            e.preventDefault();
+            alert(currentLang === 'en' ? "Lounge verification spot secured! Presentation card record logged." : "లాంజ్ సీటు విజయవంతంగా రిజర్వ్ చేయబడింది!");
+            e.target.reset();
+        }
+
+        // Franchise Switcher
+        function toggleFranView(key) {
+            document.querySelectorAll('.f-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('[id^="tab-"]').forEach(b => b.classList.remove('bg-[#203226]', 'text-white'));
+            document.getElementById(`panel-${key}`).classList.add('active');
+            document.getElementById(`tab-${key}`).classList.add('bg-[#203226]', 'text-white');
+        }
+
+        function updateFileNameLabel(input) {
+            const name = input.files[0]?.name || "Attached Document";
+            document.getElementById('fileUploadContainerText').innerText = name;
+        }
+
+        function handleJobFormSubmit(e) {
+            e.preventDefault();
+            alert(currentLang === 'en' ? "Candidate file successfully submitted to Team Unity Foods." : "మీ దరఖాస్తు విజయవంతంగా సమర్పించబడింది.");
+            e.target.reset();
+            document.getElementById('fileUploadContainerText').innerHTML = `<i class="fa-solid fa-plus text-[#203226] mr-1"></i> Attach Resume Document`;
+        }
+
+        // 21-Article Chromatic Feed Engine
+        let selectedBlogCategory = 'all';
+        const blogDataset = [
+            { id: 1, tag: 'business', date: 'Nov 28, 2025', readEn: '5 min read', readTe: '5 నిమిషాల పఠనం', titleEn: 'Top 5 Reasons to Invest in Hyderabadi Chai Adda Before 2026', titleTe: '2026 లోపు హైదరాబాదీ చాయ్ అడ్డాలో పెట్టుబడి పెట్టడానికి టాప్ 5 కారణాలు', icon: 'fa-chart-line' },
+            { id: 2, tag: 'culture', date: 'Nov 25, 2025', readEn: '5 min read', readTe: '5 నిమిషాల పఠనం', titleEn: 'From Your First Sip to the Last Smile – HCA’s Commitment', titleTe: 'మీ మొదటి సిప్ నుండి చివరి చిరునవ్వు వరకు – కస్టమర్ల పట్ల HCA నిబద్ధత', icon: 'fa-smile' },
+            { id: 3, tag: 'culture', date: 'Nov 20, 2025', readEn: '6 min read', readTe: '6 నిమిషాల పఠనం', titleEn: 'How a Cup of HCA Chai Can Make Your Busy Day Feel Relaxed', titleTe: 'ఒక కప్పు HCA చాయ్ మీ బిజీ రోజును ఎంత ప్రశాంతంగా మార్చగలదు', icon: 'fa-mug-hot' },
+            { id: 4, tag: 'business', date: 'Nov 12, 2025', readEn: '6 min read', readTe: '6 నిమిషాల పఠనం', titleEn: 'From Cup to Cash Flow: How a Chai Franchise Can Make You an Owner', titleTe: 'కప్ నుండి క్యాష్ ఫ్లో వరకు: చాయ్ ఫ్రాంచైజీ మిమ్మల్ని ఎలా యజమానిని చేస్తుంది', icon: 'fa-wallet' },
+            { id: 5, tag: 'business', date: 'Oct 31, 2025', readEn: '5 min read', readTe: '5 నిమిషాల పఠనం', titleEn: 'Every Outlet, a New Story – Inside the Growing HCA Family', titleTe: 'ప్రти అవుట్‌లెట్, ఒక కొత్త కథ – పెరుగుతున్న HCA కుటుంబంలోపల', icon: 'fa-network-wired' },
+            { id: 6, tag: 'culture', date: 'Oct 24, 2025', readEn: '6 min read', readTe: '6 నిమిషాల పఠనం', titleEn: 'Top 5 Reasons Why Chai Addas Are the New Social Hubs', titleTe: 'భారతీయ నగరాల్లో చాయ్ అడ్డాలు కొత్త సోషల్ హబ్‌లుగా మారడానికి టాప్ 5 కారణాలు', icon: 'fa-users' },
+            { id: 12, tag: 'business', date: 'Jul 5, 2025', readEn: '4 min read', readTe: '4 నిమిషాల పఠనం', titleEn: 'Hyderabad Tea Franchise Investment Guide: Costs & ROI', titleTe: 'హైదరాబాద్ టీ ఫ్రాంచైజీ ఇన్వెస్ట్‌మెంట్ గైడ్: ఖర్చులు, లాభాలు మరియు ROI', icon: 'fa-calculator' },
+            { id: 14, tag: 'business', date: 'Jun 6, 2025', readEn: '4 min read', readTe: '4 నిమిషాల పఠనం', titleEn: 'Why the Chai Cafe Industry is Booming in India Right Now', titleTe: 'భారతదేశంలో చాయ్ కేఫ్ పరిశ్రమ ఇప్పుడు ఎందుకు వేగంగా దూసుకుపోతోంది', icon: 'fa-arrow-trend-up' },
+            { id: 19, tag: 'culture', date: 'May 24, 2025', readEn: '2 min read', readTe: '2 నిమిషాల పఠనం', titleEn: 'Where to Sip the Best Iced Tea in Hyderabad', titleTe: 'హైదరాబాద్‌లో బెస్ట్ ఐస్‌డ్ టీ ఎక్కడ లభిస్తుంది', icon: 'fa-glass-water' }
+        ];
+
+        function renderInjectedBlogFeed() {
+            const feedContainer = document.getElementById('dynamicBlogInjectionGrid');
+            if (!feedContainer) return;
+            const filtered = selectedBlogCategory === 'all' ? blogDataset : blogDataset.filter(p => p.tag === selectedBlogCategory);
+            feedContainer.innerHTML = '';
+
+            filtered.forEach(post => {
+                const title = currentLang === 'en' ? post.titleEn : post.titleTe;
+                const read = currentLang === 'en' ? post.readEn : post.readTe;
+                feedContainer.innerHTML += `
+                    <div class="bg-white rounded-xl border border-slate-200/60 shadow-xs flex flex-col justify-between hover:shadow-md transition">
+                        <div class="p-5 space-y-2">
+                            <div class="flex justify-between items-center text-[10px] font-semibold text-slate-400">
+                                <div><span>${post.date}</span> | <span class="text-[#F26E21]">${read}</span></div>
+                                <span class="uppercase px-1.5 py-0.5 rounded bg-stone-100 font-mono">${post.tag}</span>
+                            </div>
+                            <h3 class="text-xs sm:text-sm font-black text-slate-900 leading-snug">${title}</h3>
+                        </div>
+                        <div class="px-5 pb-4 pt-2 border-t border-stone-50 flex justify-between items-center bg-stone-50/50 text-[11px] font-bold text-[#203226]">
+                            <span>Read Insight</span><i class="fa-solid ${post.icon} text-slate-300 text-xs"></i>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filterBlogCategory(key) {
+            selectedBlogCategory = key;
+            document.querySelectorAll('[id^="flt-"]').forEach(b => b.classList.remove('bg-[#203226]', 'text-white'));
+            document.getElementById(`flt-${key}`).classList.add('bg-[#203226]', 'text-white');
+            renderInjectedBlogFeed();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyLocalization();
+        });
     </script>
 </body>
 </html>
